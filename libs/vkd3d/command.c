@@ -1081,9 +1081,10 @@ static HRESULT STDMETHODCALLTYPE d3d12_command_allocator_SetName(ID3D12CommandAl
 {
     struct d3d12_command_allocator *allocator = impl_from_ID3D12CommandAllocator(iface);
 
-    FIXME("iface %p, name %s stub!\n", iface, debugstr_w(name, allocator->device->wchar_size));
+    TRACE("iface %p, name %s.\n", iface, debugstr_w(name, allocator->device->wchar_size));
 
-    return E_NOTIMPL;
+    return vkd3d_set_vk_object_name(allocator->device, (uint64_t)allocator->vk_command_pool,
+            VK_DEBUG_REPORT_OBJECT_TYPE_COMMAND_POOL_EXT, name);
 }
 
 static HRESULT STDMETHODCALLTYPE d3d12_command_allocator_GetDevice(ID3D12CommandAllocator *iface,
