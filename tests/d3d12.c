@@ -5873,7 +5873,7 @@ static void test_map_resource(void)
 
         /* Texture on custom heaps can be mapped, but the address doesn't get disclosed to applications */
         hr = ID3D12Resource_Map(resource, 0, NULL, NULL);
-        todo ok(hr == S_OK, "Got unexpected hr %#x.\n", hr);
+        ok(hr == S_OK, "Got unexpected hr %#x.\n", hr);
         ID3D12Resource_Unmap(resource, 0, NULL);
 
         ID3D12Resource_Release(resource);

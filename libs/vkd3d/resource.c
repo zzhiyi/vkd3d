@@ -915,10 +915,14 @@ static HRESULT STDMETHODCALLTYPE d3d12_resource_Map(ID3D12Resource *iface, UINT 
         return E_INVALIDARG;
     }
 
-    if (d3d12_resource_is_texture(resource))
+    if (d3d12_resource_is_texture(resource)
+            && (resource->heap_properties.Type != D3D12_HEAP_TYPE_CUSTOM
+                    || resource->heap_properties.CPUPageProperty == D3D12_CPU_PAGE_PROPERTY_NOT_AVAILABLE
+                    || resource->heap_properties.MemoryPoolPreference != D3D12_MEMORY_POOL_L0
+                    || data))
     {
         /* Textures seem to be mappable only on UMA adapters. */
-        FIXME("Not implemented for textures.\n");
+        WARN("Only textures on custom heaps are mappable and data must be NULL.\n");
         return E_INVALIDARG;
     }
 
@@ -956,7 +960,7 @@ static HRESULT STDMETHODCALLTYPE d3d12_resource_Map(ID3D12Resource *iface, UINT 
 
     if (resource->map_ptr)
     {
-        *data = resource->map_ptr;
+        if (data) *data = resource->map_ptr;
         ++resource->map_count;
     }
 
